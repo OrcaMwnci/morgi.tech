@@ -1,0 +1,350 @@
+/*──────────────────────────────────────────────────────────────*/
+/*                       FONT‑FACE BLOCKS                       */
+/*  (unchanged – copy ALL your original @font‑face rules here)  */
+/*──────────────────────────────────────────────────────────────*/
+
+/* … paste the full set of @font‑face declarations … */
+
+/*──────────────────────────────────────────────────────────────*/
+/*        RESPONSIVE DESIGN TOKENS & BREAK‑POINTS              */
+/*──────────────────────────────────────────────────────────────*/
+
+:root{
+  --side-padding: 16px;          /* phone gutters              */
+  --content-w:    100%;          /* card width on phone        */
+  --gap:          20px;          /* vertical spacing           */
+  --font-huge:    clamp(1.6rem, 6vw, 2rem);
+  --font-big:     clamp(1.2rem, 4vw, 1.5rem);
+}
+
+@media (min-width:768px){
+  :root{
+    --side-padding: 32px;
+    --content-w:    640px;
+    --gap:          28px;
+    --font-huge:    2.2rem;
+    --font-big:     1.7rem;
+  }
+}
+@media (min-width:1200px){
+  :root{ --content-w: 760px; }
+}
+
+/*──────────────────────────────────────────────────────────────*/
+/*                  GENERAL RESET / BASE                        */
+/*──────────────────────────────────────────────────────────────*/
+
+*{ box-sizing:border-box; border-radius:.375rem; }
+
+body{
+  background:#000912 url('static/media/sbg7v5.jpg') no-repeat center/100vw;
+  opacity:.95;
+  color:#fff;
+  font-family:"Commissioner",sans-serif;
+}
+
+/*──────────────────────────────────────────────────────────────*/
+/*                       STRUCTURE                              */
+/*──────────────────────────────────────────────────────────────*/
+
+.app_style{
+  padding-top:var(--gap);
+  display:flex; flex-direction:column; align-items:center;
+}
+
+.mod_conto{
+  margin:0 auto var(--gap);
+  max-width:var(--content-w);
+  padding:0 var(--side-padding);
+}
+
+.mod_contso{display:flex; flex-direction:column; align-items:center;}
+
+.mod_mess,.mod_mesdon{
+  width:100%;
+  font-size:var(--font-big);
+  background:rgba(0,0,0,.3);
+  box-shadow:0 3px 5px rgb(0 0 0/.4);
+}
+.mod_mess_text{padding:2px 14px;}
+
+.mod_reto{margin-top:var(--gap); width:100%;}
+.mod_fram{background:rgba(0,0,0,.5); padding-bottom:var(--gap);}
+
+.mod_box_in{
+  display:flex; flex-wrap:wrap; gap:var(--gap);
+  justify-content:space-evenly; padding:var(--gap);
+}
+
+/*──────────────────────────────────────────────────────────────*/
+/*                 NAVIGATION BAR                               */
+/*──────────────────────────────────────────────────────────────*/
+
+.nav_style{
+  position:fixed; bottom:0; left:0; right:0;
+  display:flex; justify-content:space-between; align-items:center;
+  height:56px; padding:0 var(--side-padding);
+  backdrop-filter:blur(10px) brightness(.6); z-index:10;
+}
+@media (min-width:768px){
+  .nav_style{
+    top:0; bottom:auto; width:var(--content-w);
+    left:50%; transform:translateX(-50%);
+    border-radius:0 0 .375rem .375rem;
+  }
+}
+.nav_left,.nav_right{display:flex; align-items:center;}
+.nav_item,.nav_item_activ,.nav_itemdon{
+  display:flex; align-items:center; height:40px;
+  margin:0 5px 4px 5px; text-decoration:none; cursor:pointer;
+}
+.nav_item{opacity:.65; color:#fff;}
+.nav_item_activ{opacity:1; font-weight:700; color:#fff;
+  border-bottom:2px solid #4fc69a; border-radius:0;}
+.nav_itemdon{color:#000; opacity:.65;}
+.donate_button{
+  background:rgba(79,198,154,.8); color:#000;
+  border:1px solid rgb(255 255 255/.2);
+  padding:8px 12px; margin-right:12px; height:40px;
+  display:flex; align-items:center; font-weight:500;
+}
+
+/*──────────────────────────────────────────────────────────────*/
+/*                FORM LABELS & INPUTS                          */
+/*──────────────────────────────────────────────────────────────*/
+
+.var_nam{font-size:var(--font-huge); color:#fff;}
+.over_var{font-size:var(--font-big); color:rgba(255,255,255,.8);}
+.var_inp{display:flex; flex-direction:column; width:100%; max-width:160px;}
+
+.var_fiel,.var_auto_fiel{
+  width:100%; background:rgba(0,0,0,.65); color:#fff;
+  border:none; padding:8px 12px; text-align:right;
+  height:48px; font-size:20px; font-family:"Commissioner",sans-serif;
+}
+@media (min-width:768px){
+  .var_fiel,.var_auto_fiel{height:50px; font-size:26px;}
+}
+.var_auto_fiel{border:1px solid #ff612f;}
+
+/* IOS number spinner removal */
+input[type=number]{-moz-appearance:textfield;}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button{display:none;}
+
+/*──────────────────────────────────────────────────────────────*/
+/*                 BUTTONS & INTERACTIONS                       */
+/*──────────────────────────────────────────────────────────────*/
+
+button{
+  cursor:pointer; background:#4fc69a; color:#000;
+  border:1px solid rgb(255 255 255/.2); font-weight:500;
+  min-height:48px; overflow:hidden;
+}
+.calc_but{width:100%; margin-top:var(--gap); font-size:18px;}
+.res_but{background:rgba(198,97,79,.5); color:#fff; min-width:60px;}
+
+:focus-visible{outline:2px solid #4fc69a; outline-offset:2px;}
+
+/*──────────────────────────────────────────────────────────────*/
+/*                 RESULT PANEL                                 */
+/*──────────────────────────────────────────────────────────────*/
+
+.ans_text_ofram{width:100%; padding:0 36px;}
+.ans_text_bar,.ans_text_barb{
+  display:flex; justify-content:space-between;
+  background:rgba(0,0,0,.5); border:1px solid #fff;
+  font-size:var(--font-big); padding:0 10px;
+}
+.ans_text_bart{font-weight:bold;}
+
+/*──────────────────────────────────────────────────────────────*/
+/*                 SLIDER & CHECKBOX                            */
+/*──────────────────────────────────────────────────────────────*/
+
+input[type=range]{width:100%;}
+input[type=checkbox]{width:20px;height:20px;}
+
+/*──────────────────────────────────────────────────────────────*/
+/*                 SHADOWS (desktop only)                       */
+/*──────────────────────────────────────────────────────────────*/
+
+@media (min-width:768px){
+  .mod_fram,.mod_mess{box-shadow:0 4px 12px rgb(0 0 0/.4);}
+}
+
+/*──────────────────────────────────────────────────────────────*/
+/*                END OF OPTIMISED STYLESHEET                   */
+/*──────────────────────────────────────────────────────────────*/
+/* ───── pair labels + inputs in two equal columns ───── */
+.mod_box_in{
+  display:grid;
+  /* two equal columns, auto rows */
+  grid-template-columns: 1fr max(120px,25%);
+  gap: var(--gap) var(--gap);
+  align-items:center;          /* label baseline aligns input */
+}
+
+/* bigger screens: tighten grid so inputs don’t stretch */
+@media (min-width:768px){
+  .mod_box_in{
+    grid-template-columns:auto 160px;
+  }
+}
+
+/* label cells */
+.var_nam{
+  grid-column: 1 / 2;          /* force into first column     */
+  font-size: var(--font-big);  /* reduce a bit so they fit    */
+  margin:0; padding:0;
+}
+
+/* input column already 100% width, no change */
+.var_inp{
+  grid-column: 2 / 3;          /* second column               */
+  display:flex; flex-direction:column; gap:var(--gap);
+  margin:0;
+}
+/* ─────  VARIABLE PANE : two‑column grid  ───── */
+.mod_box_in{
+  /* exactly two columns:   labels | inputs   */
+  display:grid;
+  grid-template-columns: 1fr 160px;   /* 160 px matches your field width   */
+  column-gap: var(--gap);
+  row-gap:   calc(var(--gap) * .6);
+  align-items:center;                /* vertical centring of each row     */
+}
+
+/* allow labels to wrap but keep spacing tight */
+.var_nam{
+  margin:0;              /* remove extra top/bottom space   */
+  font-size: var(--font-huge);
+  line-height: 1.15;
+}
+
+/* shrink font a bit on phones so labels never hit edge */
+@media (max-width: 380px){
+  .var_nam{ font-size: clamp(1.4rem, 5vw, 1.6rem); }
+}
+
+/* inputs already fill the right grid cell via .var_fiel…  */
+/* just ensure the column container doesn’t add margin     */
+.var_inp{
+  margin:0;
+  display:flex;
+  flex-direction:column;
+  gap: var(--gap);       /* even vertical spacing            */
+}
+
+/* remove the old spacer divs that were pushing inputs down */
+.var_inp_top,
+.var_inp_bl,
+.var_inp_down{ display:none!important; }
+
+/* on very wide desktops, bump input column to 190 px so    */
+/* labels don’t collide with numbers                        */
+@media (min-width: 1200px){
+  .mod_box_in{ grid-template-columns: 1fr 190px; }
+}
+/* ensure each label sits on its own line */
+.var_nam_ret{            /* the wrapper holding all label spans  */
+  display:flex;
+  flex-direction:column; /* stack children vertically            */
+}
+
+.var_span{               /* each <span> inside                   */
+  display:block;         /* force new row                        */
+  margin-bottom: calc(var(--gap)*.6);   /* same gap as inputs     */
+}
+
+/* keep input column gaps identical */
+.var_inp{ gap: calc(var(--gap)*.6); }
+/* ─── RESULTS STACK (mirrors slider look) ─── */
+.resultStack{
+  list-style:none; margin:var(--gap) 0 0; padding:0;
+  border:1px solid #fff3; background:rgba(0,0,0,.45);
+}
+.resultStack li{
+  padding:.6rem 1rem;
+  font-size:var(--font-big);
+  border-bottom:1px solid #fff2;
+}
+.resultStack li:last-child{border-bottom:none;}
+
+/* reset button inside list */
+.resultStack .res_but{
+  width:100%; min-height:40px; margin:0;
+  background:rgba(198,97,79,.7); color:#fff;
+  border:none; font-weight:500;
+}
+
+/* ─── CALCULATE BUTTON polish ─── */
+.calc_but{
+  width:100%;
+  height:48px;
+  font-size:18px; font-weight:600;
+  background:#4fc69a;
+  color:#000; border:none;
+  transition:background .15s;
+}
+.calc_but:hover{background:#66d1ac;}
+.calc_but:active{background:#3faf85; transform:translateY(1px);}
+.calc_but:focus-visible{outline:3px solid #1d8060; outline-offset:2px;}
+/* ─── ALIGN VARIABLE GRID ───────────────────────────── */
+.mod_box_in{
+  /* two equal columns: labels | inputs  */
+  display:grid;
+  grid-template-columns: 1fr 170px;   /* 170 px ≈ input width */
+  grid-auto-rows:auto;
+  row-gap: 24px;                      /* vertical spacing */
+  column-gap: 24px;
+  align-items:center;                 /* vertical centring in a row */
+}
+
+/* flatten the two internal wrappers so their children
+   participate directly in the parent grid                */
+.var_nam_ret,
+.var_inp{
+  display:contents;
+}
+
+/* just to be safe: make each span a block so it keeps its row */
+.var_nam_ret .var_span{display:block;}
+
+/* ── aligned label‑input rows ───────────────────────── */
+.varGrid{display:flex;flex-direction:column;gap:24px;}
+.varRow{
+  display:flex;justify-content:space-between;align-items:center;
+}
+.varRow > label{
+  flex:1 1 auto;               /* take remaining space  */
+  font-size:var(--font-huge);  /* same as before        */
+}
+.varRow > input{
+  flex:0 0 170px;              /* fixed width column    */
+}
+
+/* ─── GLOBAL CARD PADDING (all calculator sections) ─── */
+.mod_fram{
+  padding:32px 28px;            /* inner padding all around        */
+}
+
+/* ─── LABEL / INPUT ROW PADDING ─── */
+.varRow{
+  padding-inline:4px;           /* little breathing space left/right */
+  gap:12px;                     /* label‑to‑input separation          */
+}
+
+/* ─── SLIDER WRAP SPACING ─── */
+.sliderWrap{
+  margin-top:20px;              /* smaller than before               */
+  margin-bottom:28px;
+}
+
+/* ─── CHECKBOX INDENT ─── */
+.sliderWrap input[type="checkbox"]{margin-inline-start:4px;}
+.sliderWrap label{margin-left:6px;}
+
+/* ─── RESULTS STACK TOP MARGIN ─── */
+.resultStack{margin-top:20px;}
+

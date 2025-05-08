@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Morgi Calculator — perfectly-aligned grid</title>
+
+  <link rel="stylesheet" href="styles.css"><!-- your global CSS -->
+  <link rel="icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gap: 24px;
+      --box-h: 56px;
+      --font-huge: 2.25rem;
+    }
+
+    /* card & slider */
+    .mod_fram { padding: 32px 28px; }
+    .sliderWrap { margin: calc(var(--gap)*.3) 0 var(--gap); }
+    input[type=range].priceSlider {
+      width: 100%;
+      padding-inline: 12px;
+    }
+
+    /* two-column grid: left fixed, right fluid */
+    #calcForm {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      column-gap: var(--gap);
+      row-gap: var(--gap);
+      align-items: center;
+    }
+
+    /* shared box style */
+    .box {
+      height: var(--box-h);
+      display: flex;
+      align-items: center;
+      box-sizing: border-box;
+      font-size: var(--font-huge);
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    /* static labels */
+    label.var_label {
+      color: #fff;
+      padding-left: 6px;
+    }
+
+    /* editable token names */
+    input.var_label {
+      width: 100%;
+      background: rgba(0,0,0,.35);
+      color: #fff;
+      padding: 0 10px;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: .375rem;
+    }
+    input.var_label:focus { outline: 2px solid #4fc69a; }
+
+    /* numeric inputs: shrink to 10ch, align right */
+    input.var_fiel {
+      max-width: 10ch;
+      justify-self: end;
+      background: rgba(0,0,0,.65);
+      color: #fff;
+      padding: 0 10px;
+      text-align: right;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: .375rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"><div class="app_style">
+    <div class="mod_conto"><div class="mod_contso">
+
+      <section class="mod_mess"><p class="mod_mess_text">
+        Unified composition &amp; Divergence Loss calculator
+      </p></section>
+
+      <section class="mod_reto"><section class="mod_fram">
+
+        <!-- GRID FORM -->
+        <form id="calcForm" autocomplete="off">
+          <label for="inputPI"  class="var_label box">Initial Price</label>
+          <input id="inputPI"   class="var_fiel box"
+                 type="number" step="any" inputmode="decimal"
+                 placeholder="0" tabindex="1">
+
+          <label for="inputPA"  class="var_label box">Min Range</label>
+          <input id="inputPA"   class="var_fiel box"
+                 type="number" step="any" inputmode="decimal"
+                 placeholder="0" tabindex="2">
+
+          <label for="inputPB"  class="var_label box">Max Range</label>
+          <input id="inputPB"   class="var_fiel box"
+                 type="number" step="any" inputmode="decimal"
+                 placeholder="0" tabindex="3">
+
+          <input id="nameA"     class="var_label box"
+                 type="text" maxlength="18" value="Token A" tabindex="20">
+          <input id="inputTA"   class="var_fiel box"
+                 type="number" step="any" inputmode="decimal"
+                 placeholder="0" tabindex="4">
+
+          <input id="nameB"     class="var_label box"
+                 type="text" maxlength="18" value="Token B" tabindex="21">
+          <input id="inputTB"   class="var_fiel box"
+                 type="number" step="any" inputmode="decimal"
+                 placeholder="0" tabindex="5">
+
+          <label for="inputPQ"  class="var_label box">Query Price</label>
+          <input id="inputPQ"   class="var_fiel box"
+                 type="number" step="any" inputmode="decimal"
+                 placeholder="0" tabindex="6">
+        </form>
+
+        <!-- SLIDER & CHECKBOX -->
+        <section class="sliderWrap">
+          <input type="range" id="priceSlider" class="priceSlider" step="0.0001" value="0">
+          <div style="margin-top:.6rem">
+            <input type="checkbox" id="chkBeyond" tabindex="7">
+            <label for="chkBeyond">Display repositioning loss beyond range</label>
+          </div>
+        </section>
+
+        <!-- RESULTS -->
+        <ul class="resultStack" aria-live="polite">
+          <li id="outA">Token A = 0</li>
+          <li id="outB">Token B = 0</li>
+          <li id="outDL">Divergence Loss = 0 %</li>
+          <li><button class="res_but" id="resetBtn" type="button" tabindex="8">Reset</button></li>
+        </ul>
+
+      </section></section>
+    </div></div>
+  </div></div>
+
+  <script type="module">
+  /* ─────── helpers ─────── */
+  const sq = n => Math.sqrt(n);
+  const v  = el => +el.value || 0;
+
+  /* ─ liquidity math ─ */
+  const L_fromA=(A,p0,pa,pb)=>A*(sq(p0)*sq(pb))/(sq(pb)-sq(p0));
+  const L_fromB_above=(B,pa,pb)=>B/(sq(pb)-sq(pa));
+  const L_fromB_inside=(B,p0,pa)=>B/(sq(p0)-sq(pa));
+  const A_fromL=(L,p0,pb)=>L*(sq(p0)*sq(pb))/(sq(pb)-sq(p0));
+  const B_fromL_inside=(L,p0,pa)=>L*(sq(p0)-sq(pa));
+
+  /* ─ divergence loss ─ */
+  const dlStd=(p,p0,pa,pb)=>{const[s0,s1,s2,s]=[p0,pa,pb,p].map(sq);
+    const D=s0-s1+(1/s0-1/s2)*p; if(!D) return NaN;
+    const N=p<=pa?s1-pa/s2:p>=pb?2*s2-s1-pb/s2:2*s-s1-p/s2;
+    return (N/D-1)*100;
+  };
+  const dlBeyond=(p,p0,pa,pb)=>p<pa
+    ?((1/sq(pa)-1/sq(pb))*p/(sq(p0)-sq(pa)+(1/sq(p0)-1/sq(pb))*p)-1)*100
+    :p>pb
+      ?((sq(pb)-sq(pa))/(sq(p0)-sq(pa)+(1/sq(p0)-1/sq(pb))*p)-1)*100
+      :dlStd(p,p0,pa,pb);
+  const divLoss=(p,p0,pa,pb,b)=>b
+    ? dlBeyond(p,p0,pa,pb)
+    : dlStd(Math.min(Math.max(p,pa),pb),p0,pa,pb);
+
+  /* ─── DOM refs ─── */
+  const form   = document.getElementById('calcForm');
+  const { inputPI:PI, inputPA:PA, inputPB:PB,
+          inputTA:TA, inputTB:TB, inputPQ:PQ,
+          nameA, nameB } = form.elements;
+  const slider = document.getElementById('priceSlider');
+  const chk    = document.getElementById('chkBeyond');
+  const outA   = document.getElementById('outA');
+  const outB   = document.getElementById('outB');
+  const outDL  = document.getElementById('outDL');
+
+  let anchorPQ=0, lastEdit='A';
+
+  /* ─── now if PI≥PB we force p0=PB ─── */
+  const p0eff = ()=>{
+    const pi = v(PI), pa = v(PA), pb = v(PB);
+    if (pi >= pb) return pb;
+    return Math.max(pi, pa);
+  };
+
+  function setMode(m){
+    if(m==='below'){
+      TA.readOnly=false; TA.tabIndex=4;
+      TB.readOnly=true;  TB.tabIndex=-1; TB.value='0';
+    }
+    else if(m==='above'){
+      TA.readOnly=true;  TA.tabIndex=-1; TA.value='0';
+      TB.readOnly=false; TB.tabIndex=5;
+    }
+    else {
+      TA.readOnly=false; TA.tabIndex=4;
+      TB.readOnly=false; TB.tabIndex=5;
+    }
+  }
+
+  function liquidity(){
+    const p0Raw=v(PI), pa=v(PA), pb=v(PB), p0=p0eff();
+    if(!(pa&&pb&&pa<pb)) return NaN;
+
+    if(p0Raw<=pa){
+      setMode('below');
+      const A=v(TA); if(!A) return NaN;
+      const L=L_fromA(A,p0,pa,pb);
+      TB.value=B_fromL_inside(L,p0,pa).toFixed(8);
+      lastEdit='A'; return L;
+    }
+    if(p0Raw>=pb){
+      setMode('above');
+      const B=v(TB); if(!B) return NaN;
+      const L=L_fromB_above(B,pa,pb);
+      lastEdit='B'; return L;
+    }
+    setMode('inside');
+    if(lastEdit==='A'){
+      const A=v(TA); if(!A){ TB.value=''; return NaN; }
+      const L=L_fromA(A,p0,pa,pb);
+      TB.value=B_fromL_inside(L,p0,pa).toFixed(8);
+      return L;
+    } else {
+      const B=v(TB); if(!B){ TA.value=''; return NaN; }
+      const L=L_fromB_inside(B,p0,pa);
+      TA.value=A_fromL(L,p0,pb).toFixed(8);
+      return L;
+    }
+  }
+
+  function rails(){
+    const pa=v(PA), pb=v(PB);
+    let lo=0, hi=0;
+    if(pa&&pb&&pa<pb){
+      if(chk.checked){
+        if(anchorPQ<pa){ lo=anchorPQ*0.5; hi=pb*1.5; }
+        else if(anchorPQ>pb){ lo=pa*0.5; hi=anchorPQ*1.5; }
+        else { lo=pa*0.5; hi=pb*1.5; }
+      } else {
+        lo=pa; hi=pb;
+      }
+    }
+    slider.min=lo; slider.max=hi;
+
+    // only clamp PQ when "beyond" is checked
+    if(chk.checked){
+      if(v(PQ)<lo) PQ.value=lo;
+      if(v(PQ)>hi) PQ.value=hi;
+    }
+
+    slider.value = PQ.value || lo;
+  }
+
+  let raf=0;
+  function schedule(){
+    cancelAnimationFrame(raf);
+    raf=requestAnimationFrame(update);
+  }
+
+  function update(){
+    const p0=p0eff(), pa=v(PA), pb=v(PB), pq=v(PQ);
+    const lblA=nameA.value.trim()||'Token A';
+    const lblB=nameB.value.trim()||'Token B';
+
+    const L=liquidity();
+    rails();
+
+    outDL.textContent = (p0&&pa&&pb&&pq)
+      ? `Divergence Loss = ${divLoss(pq,p0,pa,pb,chk.checked).toFixed(2)} %`
+      : 'Divergence Loss = 0 %';
+
+    if(!L||!pq){
+      outA.textContent=`${lblA} = 0`;
+      outB.textContent=`${lblB} = 0`;
+      return;
+    }
+    const {a,b}=(()=>{
+      const s=sq(pq), sMin=sq(pa), sMax=sq(pb);
+      if(pq<=pa) return {a:L*(sMax-sMin)/(sMin*sMax), b:0};
+      if(pq>=pb) return {a:0, b:L*(sMax-sMin)};
+      return {a:L*(sMax-s)/(s*sMax), b:L*(s-sMin)};
+    })();
+
+    outA.textContent=`${lblA} = ${a.toFixed(8)}`;
+    outB.textContent=`${lblB} = ${b.toFixed(8)}`;
+  }
+
+  form.addEventListener('input', e=>{
+    switch(e.target.id){
+      case 'inputPQ':   anchorPQ=v(PQ); break;
+      case 'inputPA': case 'inputPB':
+        if(!anchorPQ) anchorPQ=v(PQ);
+        break;
+      case 'inputTA':   lastEdit='A'; break;
+      case 'inputTB':   lastEdit='B'; break;
+    }
+    schedule();
+  });
+
+  slider.addEventListener('input', ()=>{
+    PQ.value=slider.value;
+    schedule();
+  });
+
+  chk.addEventListener('input', schedule);
+
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    form.reset();
+    slider.min=slider.max=slider.value=0;
+    chk.checked=false;
+    anchorPQ=0; lastEdit='A';
+    outA.textContent='Token A = 0';
+    outB.textContent='Token B = 0';
+    outDL.textContent='Divergence Loss = 0 %';
+  });
+
+  update();
+  </script>
+</body>
+</html>
