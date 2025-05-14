@@ -94,7 +94,7 @@
         <!-- GRID FORM -->
         <form id="calcForm" autocomplete="off">
 
-          <!-- moved full-range checkbox here, reduced bottom margin to 25% -->
+          <!-- Full-range checkbox -->
           <div style="grid-column:1/-1; display:flex; align-items:center; gap:6px; margin-bottom:calc(var(--gap)*0.25);">
             <input type="checkbox" id="chkFull" tabindex="7">
             <label for="chkFull" style="color:#fff;">
@@ -209,7 +209,7 @@
       const N = p<=pa   ? x1-pa/x2
               : p>=pb   ? 2*x2-x1-pb/x2
               :          2*x - x1 - p/x2;
-      return Math.abs((N/D-1)*100);
+      return (N/D-1)*100;
     }
     function divLoss(p,p0,pa,pb,beyond){
       const cl = Math.min(Math.max(p,pa),pb);
@@ -262,13 +262,24 @@
     }
 
     function rails(){
-      const pq=+PQ.value||0;
+      const pq0 = anchorPQ || (+PQ.value||0);
       if(chkFull.checked){
-        const lo=(+PI.value||0)*0.01, hi=anchorPQ*100;
-        slider.min=lo; slider.max=hi;
-        slider.value=Math.min(Math.max(pq,lo),hi);
+        const pi = +PI.value||0;
+        let lo, hi;
+        if(pi < pq0){
+          lo = pi * 0.01;
+          hi = pq0 * 100;
+        } else {
+          lo = pq0 * 0.01;
+          hi = pi * 100;
+        }
+        slider.min = lo;
+        slider.max = hi;
+        slider.value = Math.min(Math.max(pq0, lo), hi);
         return;
       }
+
+      // “beyond” logic unchanged
       const pa=+PA.value||0, pb=+PB.value||0;
       let lo=pa, hi=pb;
       if(chkBeyond.checked){
@@ -277,9 +288,11 @@
         else { lo=pa*0.5; hi=pb*1.5; }
       }
       slider.min=lo; slider.max=hi;
-      if(+PQ.value<lo) PQ.value=lo;
-      if(+PQ.value>hi) PQ.value=hi;
-      slider.value=PQ.value||lo;
+      if(chkBeyond.checked){
+        if(+PQ.value<lo) PQ.value=lo;
+        if(+PQ.value>hi) PQ.value=hi;
+      }
+      slider.value = +PQ.value||lo;
     }
 
     function update(){
@@ -309,16 +322,17 @@
     }
 
     form.addEventListener('input', e=>{
-      if(e.target===PQ) anchorPQ=+PQ.value||0;
+      if(e.target===PQ)            anchorPQ=+PQ.value||0;
       if((e.target===PA||e.target===PB)&&!anchorPQ) anchorPQ=+PQ.value||0;
-      if(e.target===TA) lastEdit='A';
-      if(e.target===TB) lastEdit='B';
+      if(e.target===TA)            lastEdit='A';
+      if(e.target===TB)            lastEdit='B';
       update();
     });
-    slider.addEventListener('input',()=>{PQ.value=slider.value;update();});
+    slider.addEventListener('input',()=>{ PQ.value=slider.value; update(); });
     chkFull.addEventListener('input',()=>{
       PA.value='0'; PB.value=''; PB.placeholder=chkFull.checked?'∞':'0';
-      PA.readOnly=PB.readOnly=chkFull.checked; update();
+      PA.readOnly=PB.readOnly=chkFull.checked;
+      update();
     });
     chkBeyond.addEventListener('input',update);
     document.getElementById('resetBtn').addEventListener('click',()=>{
@@ -330,6 +344,8 @@
       outB.textContent='Token B = 0';
       outDL.textContent='Divergence Loss = 0 %';
     });
+
+    // initial draw
     update();
   </script>
 </body>
