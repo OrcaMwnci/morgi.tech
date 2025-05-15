@@ -16,10 +16,10 @@
       --font-huge: 2.25rem;
     }
 
-    /* ensure background covers viewport at all zooms */
+    /* ensure background shows top at all zooms */
     body {
       background-size: cover !important;
-      background-position: center center !important;
+      background-position: top center !important;
       background-repeat: no-repeat !important;
     }
 
@@ -77,6 +77,14 @@
       text-align: right;
       border: 1px solid rgba(255,255,255,.25);
       border-radius: .375rem;
+    }
+
+    /* disclaimer style */
+    .disclaimer {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 12px;
+      text-align: center;
     }
   </style>
 </head>
@@ -152,6 +160,11 @@
           <li><button class="res_but" id="resetBtn" type="button" tabindex="9">Reset</button></li>
         </ul>
 
+        <!-- Disclaimer -->
+        <p class="disclaimer">
+          Disclaimer: This tool is for informational purposes only. Do not rely on it for financial decisions. Not built by or associated with Orca.
+        </p>
+
       </section></section>
     </div></div>
   </div></div>
@@ -211,6 +224,7 @@
               :          2*x - x1 - p/x2;
       return (N/D-1)*100;
     }
+
     function divLoss(p,p0,pa,pb,beyond){
       const cl = Math.min(Math.max(p,pa),pb);
       return beyond ? dlStd(p,p0,pa,pb)
@@ -263,6 +277,8 @@
 
     function rails(){
       const pq0 = anchorPQ || (+PQ.value||0);
+
+      // full-range: set min/max but don't override slider.value here
       if(chkFull.checked){
         const pi = +PI.value||0;
         let lo, hi;
@@ -275,7 +291,8 @@
         }
         slider.min = lo;
         slider.max = hi;
-        slider.value = Math.min(Math.max(pq0, lo), hi);
+        if (+PQ.value < lo ) PQ.value = lo;
+        if (+PQ.value > hi ) PQ.value = hi;
         return;
       }
 
@@ -287,12 +304,13 @@
         else if(anchorPQ>pb){ lo=pa*0.5; hi=anchorPQ*1.5; }
         else { lo=pa*0.5; hi=pb*1.5; }
       }
-      slider.min=lo; slider.max=hi;
+      slider.min = lo;
+      slider.max = hi;
       if(chkBeyond.checked){
         if(+PQ.value<lo) PQ.value=lo;
         if(+PQ.value>hi) PQ.value=hi;
       }
-      slider.value = +PQ.value||lo;
+      slider.value = +PQ.value || lo;
     }
 
     function update(){
@@ -300,43 +318,53 @@
             p0=p0eff(), pq=+PQ.value||0,
             lblA=nameA.value.trim()||'Token A',
             lblB=nameB.value.trim()||'Token B';
-      const L=liquidity(); rails();
-      let loss=0;
-      if(chkFull.checked&&p0&&pq){
-        loss=Math.abs((1-2*Math.sqrt(pq/p0)/(1+pq/p0))*100);
-      } else if(p0&&pa&&pb&&pq){
-        loss=divLoss(pq,p0,pa,pb,chkBeyond.checked);
+
+      const L = liquidity();
+      rails();
+
+      let loss = 0;
+      if(chkFull.checked && p0 && pq){
+        loss = Math.abs((1 - 2*Math.sqrt(pq/p0)/(1+pq/p0))*100);
+      } else if(p0 && pa && pb && pq){
+        loss = Math.abs(divLoss(pq,p0,pa,pb,chkBeyond.checked));
       }
-      outDL.textContent=`Divergence Loss = ${loss.toFixed(2)} %`;
+      outDL.textContent = `Divergence Loss = ${loss.toFixed(2)} %`;
+
       let a=0,b=0;
-      if(chkFull.checked&&L&&pq){
-        a=Math.sqrt(L/pq); b=Math.sqrt(L*pq);
-      } else if(L&&pq){
+      if(chkFull.checked && L && pq){
+        a = Math.sqrt(L/pq); b = Math.sqrt(L*pq);
+      } else if(L && pq){
         const s=sq(pq), sMin=sq(pa), sMax=sq(pb);
-        if(pq<=pa) a=L*(sMax-sMin)/(sMin*sMax);
+        if(pq<=pa)      a=L*(sMax-sMin)/(sMin*sMax);
         else if(pq>=pb) b=L*(sMax-sMin);
         else { a=L*(sMax-s)/(s*sMax); b=L*(s-sMin); }
       }
-      outA.textContent=`${lblA} = ${a.toFixed(8)}`;
-      outB.textContent=`${lblB} = ${b.toFixed(8)}`;
+      outA.textContent = `${lblA} = ${a.toFixed(8)}`;
+      outB.textContent = `${lblB} = ${b.toFixed(8)}`;
     }
 
     form.addEventListener('input', e=>{
+      if(e.target===chkFull){
+        PA.tabIndex = chkFull.checked ? -1 : 2;
+        PB.tabIndex = chkFull.checked ? -1 : 3;
+      }
       if(e.target===PQ)            anchorPQ=+PQ.value||0;
       if((e.target===PA||e.target===PB)&&!anchorPQ) anchorPQ=+PQ.value||0;
       if(e.target===TA)            lastEdit='A';
       if(e.target===TB)            lastEdit='B';
       update();
     });
-    slider.addEventListener('input',()=>{ PQ.value=slider.value; update(); });
-    chkFull.addEventListener('input',()=>{
+
+    slider.addEventListener('input', ()=>{ PQ.value=slider.value; update(); });
+    chkFull.addEventListener('input', ()=>{
       PA.value='0'; PB.value=''; PB.placeholder=chkFull.checked?'∞':'0';
-      PA.readOnly=PB.readOnly=chkFull.checked;
       update();
     });
-    chkBeyond.addEventListener('input',update);
-    document.getElementById('resetBtn').addEventListener('click',()=>{
+    chkBeyond.addEventListener('input', update);
+
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
       form.reset(); PB.placeholder='0';
+      PA.tabIndex = 2; PB.tabIndex = 3;
       slider.min=slider.max=slider.value=0;
       chkFull.checked=false; chkBeyond.checked=false;
       anchorPQ=0; lastEdit='A';
@@ -345,7 +373,6 @@
       outDL.textContent='Divergence Loss = 0 %';
     });
 
-    // initial draw
     update();
   </script>
 </body>
