@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Morgi Calculator — perfectly-aligned grid</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Morgi Tech - unified CLMM calculator</title>
 
-  <link rel="stylesheet" href="styles.css"><!-- your global CSS -->
-  <link rel="icon" href="favicon.ico">
-  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" /><!-- your global CSS -->
+  <link rel="icon" href="favicon.ico" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;900&amp;family=Source+Code+Pro:wght@400;500&amp;display=swap"
+    rel="stylesheet"
+  />
 
   <style>
     :root {
@@ -15,22 +18,17 @@
       --box-h: 56px;
       --font-huge: 2.25rem;
     }
-
-    /* ensure background shows top at all zooms */
     body {
       background-size: cover !important;
       background-position: top center !important;
       background-repeat: no-repeat !important;
     }
-
     .mod_fram { padding: 32px 28px; }
     .sliderWrap { margin: calc(var(--gap)*.3) 0 var(--gap); }
     input[type=range].priceSlider {
       width: 100%;
       padding-inline: 12px;
     }
-
-    /* two-column grid: left fixed, right fluid */
     #calcForm {
       display: grid;
       grid-template-columns: 240px 1fr;
@@ -38,8 +36,6 @@
       row-gap: var(--gap);
       align-items: center;
     }
-
-    /* shared box style */
     .box {
       height: var(--box-h);
       display: flex;
@@ -49,14 +45,10 @@
       font-weight: 500;
       line-height: 1;
     }
-
-    /* static labels */
     label.var_label {
       color: #fff;
       padding-left: 6px;
     }
-
-    /* editable token names */
     input.var_label {
       width: 100%;
       background: rgba(0,0,0,.35);
@@ -66,8 +58,6 @@
       border-radius: .375rem;
     }
     input.var_label:focus { outline: 2px solid #4fc69a; }
-
-    /* numeric inputs: shrink to 10ch, align right */
     input.var_fiel {
       max-width: 10ch;
       justify-self: end;
@@ -78,13 +68,16 @@
       border: 1px solid rgba(255,255,255,.25);
       border-radius: .375rem;
     }
-
-    /* disclaimer style */
     .disclaimer {
       font-size: 0.8rem;
       opacity: 0.7;
       margin-top: 12px;
       text-align: center;
+    }
+    /* ensure highest digits are visible when auto-filled */
+    input.var_fiel, input.var_label {
+      overflow-x: auto;
+      text-overflow: clip;
     }
   </style>
 </head>
@@ -93,76 +86,184 @@
   <div id="root"><div class="app_style">
     <div class="mod_conto"><div class="mod_contso">
 
-      <section class="mod_mess"><p class="mod_mess_text">
-        Unified composition &amp; Divergence Loss calculator
-      </p></section>
-
       <section class="mod_reto"><section class="mod_fram">
 
-        <!-- GRID FORM -->
         <form id="calcForm" autocomplete="off">
 
           <!-- Full-range checkbox -->
           <div style="grid-column:1/-1; display:flex; align-items:center; gap:6px; margin-bottom:calc(var(--gap)*0.25);">
             <input type="checkbox" id="chkFull" tabindex="7">
-            <label for="chkFull" style="color:#fff;">
-              Full range position
-            </label>
+            <label for="chkFull" style="color:#fff;">Full range position</label>
           </div>
 
-          <label for="inputPI"  class="var_label box">Initial Price</label>
-          <input id="inputPI"   class="var_fiel box"
-                 type="number" step="any" inputmode="decimal"
-                 placeholder="0" tabindex="1">
+          <label for="inputPI" class="var_label box">Initial Price</label>
+          <input
+            id="inputPI"
+            class="var_fiel box"
+            type="number"
+            step="any"
+            inputmode="decimal"
+            placeholder="0"
+            tabindex="1"
+          />
 
-          <label for="inputPA"  class="var_label box">Min Range</label>
-          <input id="inputPA"   class="var_fiel box"
-                 type="number" step="any" inputmode="decimal"
-                 placeholder="0" tabindex="2">
+          <label for="inputPA" class="var_label box">Min Range</label>
+          <input
+            id="inputPA"
+            class="var_fiel box"
+            type="number"
+            step="any"
+            inputmode="decimal"
+            placeholder="0"
+            tabindex="2"
+          />
 
-          <label for="inputPB"  class="var_label box">Max Range</label>
-          <input id="inputPB"   class="var_fiel box"
-                 type="number" step="any" inputmode="decimal"
-                 placeholder="0" tabindex="3">
+          <label for="inputPB" class="var_label box">Max Range</label>
+          <input
+            id="inputPB"
+            class="var_fiel box"
+            type="number"
+            step="any"
+            inputmode="decimal"
+            placeholder="0"
+            tabindex="3"
+          />
 
-          <input id="nameA"     class="var_label box"
-                 type="text" maxlength="18" value="Token A" tabindex="20">
-          <input id="inputTA"   class="var_fiel box"
-                 type="number" step="any" inputmode="decimal"
-                 placeholder="0" tabindex="4">
+          <input
+            id="nameA"
+            class="var_label box"
+            type="text"
+            maxlength="18"
+            value="Token A"
+            tabindex="20"
+          />
+          <input
+            id="inputTA"
+            class="var_fiel box"
+            type="number"
+            step="any"
+            inputmode="decimal"
+            placeholder="0"
+            tabindex="4"
+          />
 
-          <input id="nameB"     class="var_label box"
-                 type="text" maxlength="18" value="Token B" tabindex="21">
-          <input id="inputTB"   class="var_fiel box"
-                 type="number" step="any" inputmode="decimal"
-                 placeholder="0" tabindex="5">
+          <input
+            id="nameB"
+            class="var_label box"
+            type="text"
+            maxlength="18"
+            value="Token B"
+            tabindex="21"
+          />
+          <input
+            id="inputTB"
+            class="var_fiel box"
+            type="number"
+            step="any"
+            inputmode="decimal"
+            placeholder="0"
+            tabindex="5"
+          />
 
-          <label for="inputPQ"  class="var_label box">Query Price</label>
-          <input id="inputPQ"   class="var_fiel box"
-                 type="number" step="any" inputmode="decimal"
-                 placeholder="0" tabindex="6">
+          <label for="inputPQ" class="var_label box">Query Price</label>
+          <input
+            id="inputPQ"
+            class="var_fiel box"
+            type="number"
+            step="any"
+            inputmode="decimal"
+            placeholder="0"
+            tabindex="6"
+          />
+
         </form>
 
-        <!-- SLIDER + BEYOND -->
+        <!-- slider + beyond -->
         <section class="sliderWrap">
-          <input type="range" id="priceSlider" class="priceSlider" step="0.0001" value="0">
+          <input
+            type="range"
+            id="priceSlider"
+            class="priceSlider"
+            step="0.0001"
+            value="0"
+          />
           <div style="margin-top:.6rem; display:flex; align-items:center; gap:6px;">
-            <input type="checkbox" id="chkBeyond" tabindex="8">
-            <label for="chkBeyond" style="color:#fff;">Display repositioning loss beyond range</label>
+            <input type="checkbox" id="chkBeyond" tabindex="8" />
+            <label for="chkBeyond" style="color:#fff;">
+              Display repositioning loss beyond range
+            </label>
           </div>
         </section>
 
-        <!-- RESULTS -->
-        <ul class="resultStack" aria-live="polite">
+        <!-- PNL controls -->
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: var(--gap);
+            row-gap: var(--gap);
+            margin-top: var(--gap);
+          "
+        >
+          <label class="var_label box">Currency Symbol</label>
+          <input
+            id="currencySymbol"
+            class="var_fiel box"
+            type="text"
+            value="$"
+            maxlength="1"
+            tabindex="10"
+          />
+
+          <label
+            id="labelDepB"
+            for="depB"
+            class="var_label box"
+            style="white-space: nowrap;"
+          >
+            Deposit $/Token B
+          </label>
+          <input
+            id="depB"
+            class="var_fiel box"
+            type="number"
+            step="any"
+            inputmode="decimal"
+            placeholder="0"
+            tabindex="11"
+          />
+
+          <label id="labelQryB" for="qryB" class="var_label box">
+            Query $/Token B
+          </label>
+          <input
+            id="qryB"
+            class="var_fiel box"
+            type="number"
+            step="any"
+            inputmode="decimal"
+            placeholder="0"
+            tabindex="12"
+          />
+        </div>
+
+        <!-- results -->
+        <ul class="resultStack" aria-live="polite" style="margin-top:var(--gap)">
           <li id="outA">Token A = 0</li>
           <li id="outB">Token B = 0</li>
           <li id="outDL">Divergence Loss = 0 %</li>
-          <li><button class="res_but" id="resetBtn" type="button" tabindex="9">Reset</button></li>
+          <li id="outPNL"></li>
+          <li>
+            <button class="res_but" id="resetBtn" type="button" tabindex="9">
+              Reset
+            </button>
+          </li>
         </ul>
 
-        <!-- Disclaimer -->
+        <!-- disclaimer -->
         <p class="disclaimer">
-          Disclaimer: This tool is for informational purposes only. Do not rely on it for financial decisions. Not built by or associated with Orca.
+          Disclaimer: This tool is for informational purposes only. Do not rely on
+          it for financial decisions. Not built by or associated with Orca.
         </p>
 
       </section></section>
@@ -171,42 +272,55 @@
 
   <script type="module">
     const sq = n => Math.sqrt(n);
+
+    // form elements
     const form      = document.getElementById('calcForm'),
           { inputPI:PI, inputPA:PA, inputPB:PB,
             inputTA:TA, inputTB:TB, inputPQ:PQ,
-            nameA,nameB } = form.elements,
-          slider    = document.getElementById('priceSlider'),
-          chkFull   = document.getElementById('chkFull'),
-          chkBeyond = document.getElementById('chkBeyond'),
-          outA      = document.getElementById('outA'),
-          outB      = document.getElementById('outB'),
-          outDL     = document.getElementById('outDL');
+            nameA,nameB } = form.elements;
+
+    // controls & labels
+    const slider       = document.getElementById('priceSlider'),
+          chkFull      = document.getElementById('chkFull'),
+          chkBeyond    = document.getElementById('chkBeyond'),
+          currency     = document.getElementById('currencySymbol'),
+          depB         = document.getElementById('depB'),
+          qryB         = document.getElementById('qryB'),
+          labelDepB    = document.getElementById('labelDepB'),
+          labelQryB    = document.getElementById('labelQryB');
+
+    // outputs
+    const outA   = document.getElementById('outA'),
+          outB   = document.getElementById('outB'),
+          outDL  = document.getElementById('outDL'),
+          outPNL = document.getElementById('outPNL');
 
     let anchorPQ = 0, lastEdit = 'A';
 
-    function v(el){
+    function fmt(v, dp=9) {
+      let s = v.toFixed(dp).replace(/\.?0+$/, '');
+      return s || '0';
+    }
+
+    function v(el) {
       if(el===PA && chkFull.checked) return 0;
       if(el===PB && chkFull.checked) return Infinity;
-      return +el.value || 0;
+      return +el.value||0;
     }
 
     function p0eff(){
-      const pi = +PI.value||0,
-            pa = v(PA),
-            pb = v(PB);
-      return (pi >= pb) ? pb : Math.max(pi,pa);
+      const pi=+PI.value||0, pa=v(PA), pb=v(PB);
+      return (pi>=pb)?pb:Math.max(pi,pa);
     }
 
     function setMode(m){
       if(m==='below'){
         TA.readOnly=false; TA.tabIndex=4;
         TB.readOnly=true;  TB.tabIndex=-1; TB.value='0';
-      }
-      else if(m==='above'){
+      } else if(m==='above'){
         TA.readOnly=true;  TA.tabIndex=-1; TA.value='0';
         TB.readOnly=false; TB.tabIndex=5;
-      }
-      else {
+      } else {
         TA.readOnly=false; TA.tabIndex=4;
         TB.readOnly=false; TB.tabIndex=5;
       }
@@ -214,50 +328,45 @@
 
     function L_fromA(A,p0,pa,pb){ return A*(sq(p0)*sq(pb))/(sq(pb)-sq(p0)); }
     function B_fromL_inside(L,p0,pa){ return L*(sq(p0)-sq(pa)); }
-
     function dlStd(p,p0,pa,pb){
       const [x0,x1,x2,x] = [p0,pa,pb,p].map(sq),
-            D = x0 - x1 + (1/x0 - 1/x2)*p;
-      if(!D) return NaN;
-      const N = p<=pa   ? x1-pa/x2
-              : p>=pb   ? 2*x2-x1-pb/x2
-              :          2*x - x1 - p/x2;
+            D = x0-x1+(1/x0-1/x2)*p;
+      if(!D)return NaN;
+      const N = p<=pa? x1-pa/x2
+              : p>=pb? 2*x2-x1-pb/x2
+                     : 2*x-x1-p/x2;
       return (N/D-1)*100;
     }
-
     function divLoss(p,p0,pa,pb,beyond){
-      const cl = Math.min(Math.max(p,pa),pb);
-      return beyond ? dlStd(p,p0,pa,pb)
-                     : dlStd(cl,p0,pa,pb);
+      const cl=Math.min(Math.max(p,pa),pb);
+      return beyond? dlStd(p,p0,pa,pb): dlStd(cl,p0,pa,pb);
     }
 
     function liquidity(){
-      const piRaw = +PI.value||0, pa=v(PA), pb=v(PB), p0=p0eff();
+      const piRaw=+PI.value||0, pa=v(PA), pb=v(PB), p0=p0eff();
       if(chkFull.checked){
         setMode('inside');
         if(lastEdit==='A'){
-          const A=+TA.value||0; if(!A) return NaN;
-          const k = A*(A*p0);
+          const A=+TA.value||0; if(!A)return NaN;
           TB.value=(A*p0).toFixed(8);
-          return k;
+          return A*(A*p0);
         } else {
-          const B=+TB.value||0; if(!B) return NaN;
-          const k=(B/p0)*B;
+          const B=+TB.value||0; if(!B)return NaN;
           TA.value=(B/p0).toFixed(8);
-          return k;
+          return (B/p0)*B;
         }
       }
       if(!(pa&&pb&&pa<pb)) return NaN;
       if(piRaw<=pa){
         setMode('below');
-        const A=+TA.value||0; if(!A) return NaN;
+        const A=+TA.value||0; if(!A)return NaN;
         const L=L_fromA(A,p0,pa,pb);
         TB.value=B_fromL_inside(L,p0,pa).toFixed(8);
         lastEdit='A'; return L;
       }
       if(piRaw>=pb){
         setMode('above');
-        const B=+TB.value||0; if(!B) return NaN;
+        const B=+TB.value||0; if(!B)return NaN;
         const L=B/(sq(pb)-sq(pa));
         lastEdit='B'; return L;
       }
@@ -276,103 +385,126 @@
     }
 
     function rails(){
-      const pq0 = anchorPQ || (+PQ.value||0);
-
-      // full-range: set min/max but don't override slider.value here
-      if(chkFull.checked){
-        const pi = +PI.value||0;
+      const pi=+PI.value||0,
+            pa=+PA.value||0, pb=+PB.value||0,
+            pq0=anchorPQ||(+PQ.value||0);
+      if(!chkFull.checked && !chkBeyond.checked){
         let lo, hi;
-        if(pi < pq0){
-          lo = pi * 0.01;
-          hi = pq0 * 100;
-        } else {
-          lo = pq0 * 0.01;
-          hi = pi * 100;
-        }
-        slider.min = lo;
-        slider.max = hi;
-        if (+PQ.value < lo ) PQ.value = lo;
-        if (+PQ.value > hi ) PQ.value = hi;
+        if(pi<=pa){ lo=pi; hi=pb; }
+        else if(pi>=pb){ lo=pa; hi=pi; }
+        else { lo=pa; hi=pb; }
+        slider.min=lo; slider.max=hi;
+        slider.value=Math.min(Math.max(+PQ.value||lo, lo), hi);
         return;
       }
-
-      // “beyond” logic unchanged
-      const pa=+PA.value||0, pb=+PB.value||0;
+      if(chkFull.checked){
+        const lo = pi<pq0? pi*0.01: pq0*0.01,
+              hi = pi<pq0? pq0*100: pi*100;
+        slider.min=lo; slider.max=hi;
+        if(+PQ.value<lo) PQ.value=lo;
+        if(+PQ.value>hi) PQ.value=hi;
+        return;
+      }
       let lo=pa, hi=pb;
       if(chkBeyond.checked){
-        if(anchorPQ<pa){ lo=anchorPQ*0.5; hi=pb*1.5; }
-        else if(anchorPQ>pb){ lo=pa*0.5; hi=anchorPQ*1.5; }
-        else { lo=pa*0.5; hi=pb*1.5; }
+        lo = anchorPQ<pa? anchorPQ*0.5: pa*0.5;
+        hi = anchorPQ>pb? anchorPQ*1.5: pb*1.5;
       }
-      slider.min = lo;
-      slider.max = hi;
+      slider.min=lo; slider.max=hi;
       if(chkBeyond.checked){
         if(+PQ.value<lo) PQ.value=lo;
         if(+PQ.value>hi) PQ.value=hi;
       }
-      slider.value = +PQ.value || lo;
+      slider.value=+PQ.value||lo;
+    }
+
+    function updateLabels(){
+      const sym=currency.value||'$', tb=nameB.value.trim()||'Token B';
+      labelDepB.textContent = `Deposit ${sym}/${tb}`;
+      labelQryB.textContent = `Query ${sym}/${tb}`;
     }
 
     function update(){
+      updateLabels();
       const pa=+PA.value||0, pb=+PB.value||0,
             p0=p0eff(), pq=+PQ.value||0,
-            lblA=nameA.value.trim()||'Token A',
-            lblB=nameB.value.trim()||'Token B';
-
-      const L = liquidity();
+            L=liquidity();
       rails();
 
-      let loss = 0;
-      if(chkFull.checked && p0 && pq){
-        loss = Math.abs((1 - 2*Math.sqrt(pq/p0)/(1+pq/p0))*100);
-      } else if(p0 && pa && pb && pq){
-        loss = Math.abs(divLoss(pq,p0,pa,pb,chkBeyond.checked));
-      }
-      outDL.textContent = `Divergence Loss = ${loss.toFixed(2)} %`;
+      // divergence
+      let loss=0;
+      if(chkFull.checked&&p0&&pq) loss=Math.abs((1-2*Math.sqrt(pq/p0)/(1+pq/p0))*100);
+      else if(p0&&pa&&pb&&pq)     loss=Math.abs(divLoss(pq,p0,pa,pb,chkBeyond.checked));
+      outDL.textContent=`Divergence Loss = ${loss.toFixed(2)} %`;
 
+      // outA/B
       let a=0,b=0;
-      if(chkFull.checked && L && pq){
-        a = Math.sqrt(L/pq); b = Math.sqrt(L*pq);
-      } else if(L && pq){
+      if(chkFull.checked&&L&&pq){
+        a=Math.sqrt(L/pq); b=Math.sqrt(L*pq);
+      } else if(L&&pq){
         const s=sq(pq), sMin=sq(pa), sMax=sq(pb);
-        if(pq<=pa)      a=L*(sMax-sMin)/(sMin*sMax);
+        if(pq<=pa) a=L*(sMax-sMin)/(sMin*sMax);
         else if(pq>=pb) b=L*(sMax-sMin);
         else { a=L*(sMax-s)/(s*sMax); b=L*(s-sMin); }
       }
-      outA.textContent = `${lblA} = ${a.toFixed(8)}`;
-      outB.textContent = `${lblB} = ${b.toFixed(8)}`;
+      outA.textContent=`${nameA.value.trim()||'Token A'} = ${fmt(a)}`;
+      outB.textContent=`${nameB.value.trim()||'Token B'} = ${fmt(b)}`;
+
+      // auto-scroll highest digits
+      TA.scrollLeft=TB.scrollLeft=PQ.scrollLeft=0;
+
+      // PNL
+      if(depB.value && qryB.value && TA.value && TB.value && PQ.value){
+        const sym=currency.value||'$', depVal=+depB.value, qryVal=+qryB.value;
+        const depositCost  = depVal * (+TB.value) + depVal * (+TA.value) * (+PI.value);
+        const currentValue = qryVal * b + qryVal * a * pq;
+        let pnl = currentValue - depositCost;
+        if(Math.abs(pnl)<0.005) pnl=0;
+        outPNL.textContent = `PNL = ${sym}${pnl.toFixed(2)}`;
+      } else {
+        outPNL.textContent = '';
+      }
     }
 
+    // event listeners
     form.addEventListener('input', e=>{
       if(e.target===chkFull){
-        PA.tabIndex = chkFull.checked ? -1 : 2;
-        PB.tabIndex = chkFull.checked ? -1 : 3;
+        PA.tabIndex = chkFull.checked?-1:2;
+        PB.tabIndex = chkFull.checked?-1:3;
       }
-      if(e.target===PQ)            anchorPQ=+PQ.value||0;
+      if(e.target===TA) lastEdit='A';
+      if(e.target===TB) lastEdit='B';
+      if(e.target===PQ) anchorPQ=+PQ.value||0;
       if((e.target===PA||e.target===PB)&&!anchorPQ) anchorPQ=+PQ.value||0;
-      if(e.target===TA)            lastEdit='A';
-      if(e.target===TB)            lastEdit='B';
       update();
     });
-
     slider.addEventListener('input', ()=>{ PQ.value=slider.value; update(); });
+    chkBeyond.addEventListener('input', update);
     chkFull.addEventListener('input', ()=>{
       PA.value='0'; PB.value=''; PB.placeholder=chkFull.checked?'∞':'0';
       update();
     });
-    chkBeyond.addEventListener('input', update);
+    currency.addEventListener('input', ()=>{ updateLabels(); update(); });
+    depB.addEventListener('input', update);
+    qryB.addEventListener('input', update);
+    nameB.addEventListener('input', ()=>{ updateLabels(); update(); });
 
     document.getElementById('resetBtn').addEventListener('click', ()=>{
-      form.reset(); PB.placeholder='0';
-      PA.tabIndex = 2; PB.tabIndex = 3;
+      form.reset();
+      PB.placeholder='0';
+      PA.tabIndex=2; PB.tabIndex=3;
       slider.min=slider.max=slider.value=0;
       chkFull.checked=false; chkBeyond.checked=false;
+      currency.value='$';
+      depB.value=''; qryB.value='';
       anchorPQ=0; lastEdit='A';
       outA.textContent='Token A = 0';
       outB.textContent='Token B = 0';
       outDL.textContent='Divergence Loss = 0 %';
+      outPNL.textContent='';
     });
 
+    // initial draw
     update();
   </script>
 </body>

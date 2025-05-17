@@ -9,7 +9,11 @@
 /*        RESPONSIVE DESIGN TOKENS & BREAK‑POINTS              */
 /*──────────────────────────────────────────────────────────────*/
 
-:root{
+html {
+  zoom: 0.67;
+}
+
+:root {
   --side-padding: 16px;          /* phone gutters              */
   --content-w:    100%;          /* card width on phone        */
   --gap:          20px;          /* vertical spacing           */
